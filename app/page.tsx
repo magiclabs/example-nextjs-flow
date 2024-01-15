@@ -2,10 +2,7 @@
 
 import { fcl } from "@/lib/fcl";
 import { nope, yup } from "@/utils";
-import { FlowExtension } from "@magic-ext/flow";
 import { WalletUtils } from "@onflow/fcl";
-import { Magic } from "magic-sdk";
-import { useEffect, useState } from "react";
 
 fcl.config({
   "flow.network": "testnet",
@@ -16,22 +13,6 @@ fcl.config({
 });
 
 export default function Home() {
-  const [magic, setMagic] = useState<Magic<[FlowExtension]> | null>(null);
-  useEffect(() => {
-    const magic = new Magic("pk_live_57F1A666E6E19BCA", {
-      endpoint: "http://localhost:3014",
-      extensions: [
-        new FlowExtension({
-          rpcUrl: "https://rest-testnet.onflow.org",
-          network: "testnet",
-        }),
-      ],
-    });
-    // magic.wallet.connectWithUI().then((d) => console.log(d));
-
-    setMagic(magic);
-  }, []);
-
   const handleClick = async () => {
     WalletUtils.onMessageFromFCL("FCL:VIEW:READY:RESPONSE", (data: any) => {
       console.log({ data });
@@ -47,21 +28,6 @@ export default function Home() {
   const handleUnauthenticate = async () => {
     console.log("Clicked handleUnauthenticate");
     const response = await fcl.unauthenticate();
-    console.log({ response });
-  };
-
-  const handleLogout = async () => {
-    const response = await magic?.user.logout();
-    console.log({ response });
-  };
-
-  const handleShowUI = async () => {
-    const response = await magic?.wallet.showUI();
-    console.log({ response });
-  };
-
-  const handleConnectWithUI = async () => {
-    const response = await magic?.wallet.connectWithUI();
     console.log({ response });
   };
 
@@ -101,9 +67,6 @@ export default function Home() {
       <button onClick={handleAuthorization}>Authorization</button>
       <button onClick={handleSignUserMessage}>SignUserMessage</button>
       <button onClick={handleAuthorizeTransaction}>AuthroizeTransaction</button>
-      <button onClick={handleConnectWithUI}>ConnectWithUI</button>
-      <button onClick={handleShowUI}>Show UI</button>
-      <button onClick={handleLogout}>Logout</button>
     </main>
   );
 }
