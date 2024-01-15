@@ -2,17 +2,42 @@
 
 import { fcl } from "@/lib/fcl";
 import { nope, yup } from "@/utils";
-import { WalletUtils } from "@onflow/fcl";
+import { WalletUtils, mutate } from "@onflow/fcl";
+import { ChangeEvent, useState } from "react";
+
+const MAGIC_FCL_BASE_URL = "http://localhost:3002";
 
 fcl.config({
   "flow.network": "testnet",
   "accessNode.api": "https://rest-testnet.onflow.org",
-  "discovery.wallet":
-    "http://localhost:3014/v1/fcl/authn?ak=pk_live_57F1A666E6E19BCA",
+
+  "discovery.wallet": "http://localhost:3002/pk_live_B5D084C479C04892/authn",
   "discovery.wallet.method": "IFRAME/RPC",
 });
 
 export default function Home() {
+  const [selectedItem, setSelectedItem] = useState("");
+  const [apiKey, setApiKey] = useState("pk_live_B5D084C479C04892");
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setApiKey(value);
+    fcl
+      .config()
+      .put("discovery.wallet", `${MAGIC_FCL_BASE_URL}/${value}/authn`);
+  };
+
+  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setSelectedItem(value);
+    fcl.config().put(
+      "discovery.wallet",
+      `${MAGIC_FCL_BASE_URL}/${apiKey}/authn?${new URLSearchParams({
+        method: value,
+      })}`
+    );
+  };
+
   const handleClick = async () => {
     WalletUtils.onMessageFromFCL("FCL:VIEW:READY:RESPONSE", (data: any) => {
       console.log({ data });
@@ -31,40 +56,48 @@ export default function Home() {
     console.log({ response });
   };
 
-  const handleAuthorization = async () => {
-    const user = fcl.currentUser();
-    const response = await user.authorization;
-    console.log({ response });
-  };
-
   const handleSignUserMessage = async () => {
-    const user = fcl.currentUser();
-    const response = await user.signUserMessage("464f4f");
-    console.log({ response });
+    fcl
+      .currentUser()
+      .signUserMessage("464f4f")
+      .then(yup("M-1"))
+      .catch(nope("M-1"));
   };
 
   const handleAuthorizeTransaction = async () => {
-    const user = fcl.currentUser();
-    fcl
-      .mutate({
-        cadence: `
-        transaction() {
-          prepare(acct: AuthAccount) {
-            log(acct)
-          }
+    mutate({
+      cadence: `
+      transaction() {
+        prepare(acct: AuthAccount) {
+          log(acct)
         }
-      `,
-        limit: 50,
-      })
+      }
+    `,
+    })
       .then(yup("M-1"))
       .catch(nope("M-1"));
   };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24 space-y-4">
+      <input
+        style={{ padding: "4px 8px", width: "246px" }}
+        value={apiKey}
+        onChange={handleChange}
+      />
+      <label htmlFor="selectItem">Choose an item: </label>
+      <select
+        id="selectItem"
+        onChange={handleSelectChange}
+        value={selectedItem}
+      >
+        <option value="default">default</option>
+        <option value="email-otp">email-otp</option>
+        <option value="magic-link">magic-link</option>
+        <option value="sms">sms</option>
+      </select>
       <button onClick={handleClick}>Authenticate</button>
       <button onClick={handleUnauthenticate}>Unauthenticate</button>
-      <button onClick={handleAuthorization}>Authorization</button>
       <button onClick={handleSignUserMessage}>SignUserMessage</button>
       <button onClick={handleAuthorizeTransaction}>AuthroizeTransaction</button>
     </main>
