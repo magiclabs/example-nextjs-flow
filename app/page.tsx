@@ -5,19 +5,19 @@ import { nope, yup } from "@/utils";
 import { WalletUtils, mutate } from "@onflow/fcl";
 import { ChangeEvent, useState } from "react";
 
-const MAGIC_FCL_BASE_URL = "http://localhost:3002";
+const MAGIC_FCL_BASE_URL = "https://fcl-wallet-provider.vercel.app/";
+const DFEAULT_API_KEY = "pk_live_B5D084C479C04892";
 
 fcl.config({
   "flow.network": "testnet",
   "accessNode.api": "https://rest-testnet.onflow.org",
-
-  "discovery.wallet": "http://localhost:3002/pk_live_B5D084C479C04892/authn",
+  "discovery.wallet": `${MAGIC_FCL_BASE_URL}/${DFEAULT_API_KEY}/authn`,
   "discovery.wallet.method": "IFRAME/RPC",
 });
 
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState("");
-  const [apiKey, setApiKey] = useState("pk_live_B5D084C479C04892");
+  const [apiKey, setApiKey] = useState(DFEAULT_API_KEY);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
