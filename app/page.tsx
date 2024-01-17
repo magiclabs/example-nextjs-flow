@@ -1,8 +1,15 @@
 "use client";
 
+import { FCLAccount } from "@/components/fcl-account";
+import { FCLAtBlockHeight } from "@/components/fcl-at-block-height";
 import { FCLAuthenticateCard } from "@/components/fcl-authenticate-card";
+import { FCLGetAccount } from "@/components/fcl-get-account";
+import { FCLGetBlock } from "@/components/fcl-get-block";
+import { FCLGetCollection } from "@/components/fcl-get-collection";
+import { FCLGetEventsAtBlockHeightRange } from "@/components/fcl-get-events-at-blockheight-range";
 import { FCLMutateCard } from "@/components/fcl-mutate-card";
 import { FCLQueryCard } from "@/components/fcl-query-card";
+import { FCLTx } from "@/components/fcl-tx";
 import { FCLUnauthenticateCard } from "@/components/fcl-unauthenticate-card";
 import { FCLVerifyUserSignatureCard } from "@/components/fcl-verify-user-signature-card";
 import { fcl } from "@/lib/onflow";
@@ -10,7 +17,7 @@ import { nope, yup } from "@/utils";
 import { WalletUtils, mutate } from "@onflow/fcl";
 import { ChangeEvent, useState } from "react";
 
-const MAGIC_FCL_BASE_URL = "http://localhost:3002";
+const MAGIC_FCL_BASE_URL = "https://fcl-wallet-provider.vercel.app"; // "http://localhost:3002";
 const DFEAULT_API_KEY = "pk_live_B5D084C479C04892";
 
 const resolver = async () => {
@@ -24,6 +31,7 @@ fcl.config({
   "flow.network": "testnet",
   "accessNode.api": "https://rest-testnet.onflow.org",
   "discovery.wallet": `${MAGIC_FCL_BASE_URL}/${DFEAULT_API_KEY}/authn`,
+  // "discovery.wallet": "http://localhost:3002/pk_live_B5D084C479C04892/authn",
   "discovery.wallet.method": "IFRAME/RPC",
   "fcl.accountProotf.resolver": resolver,
 });
@@ -154,6 +162,13 @@ export default function Home() {
       <FCLQueryCard />
       <FCLMutateCard />
       <FCLVerifyUserSignatureCard />
+      <FCLGetBlock />
+      <FCLAccount />
+      <FCLGetAccount />
+      <FCLTx />
+      <FCLGetEventsAtBlockHeightRange />
+      <FCLGetCollection />
+      <FCLAtBlockHeight />
     </main>
   );
 }

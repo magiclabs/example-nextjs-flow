@@ -3,7 +3,6 @@
     "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "GitHub.copilot",
-    "Prisma.prisma"
+    "GitHub.copilot"
   ]
 }
