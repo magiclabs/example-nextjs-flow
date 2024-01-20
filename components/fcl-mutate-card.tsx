@@ -1,4 +1,4 @@
-import { fcl } from "@/lib/onflow";
+import { fcl } from '@/lib/fcl'
 
 export const FCLMutateCard = () => {
   const handleClick = async () => {
@@ -12,18 +12,18 @@ export const FCLMutateCard = () => {
           }
         }
       `,
-      args: (arg: any, t: any) => [arg("myName", t.String)],
+      args: (arg: any, t: any) => [arg('myName', t.String)],
       proposer: fcl.authz, // optional - default is fcl.authz
       payer: fcl.authz, // optional - default is fcl.authz
       authorizations: [fcl.authz], // optional - default is [fcl.authz]
-    });
+    })
 
-    console.log(txId);
-  };
+    console.log(txId)
+  }
 
   return (
     <div>
       <button onClick={handleClick}>fcl.mutate</button>
     </div>
-  );
-};
+  )
+}

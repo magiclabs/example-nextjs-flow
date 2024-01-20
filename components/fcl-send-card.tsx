@@ -1,4 +1,4 @@
-import { fcl } from '@/lib/onflow'
+import { fcl } from '@/lib/fcl'
 
 export const FCLSendCard = () => {
   const handleClick = async () => {

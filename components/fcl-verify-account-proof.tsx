@@ -1,4 +1,4 @@
-import { fcl } from '@/lib/onflow'
+import { fcl } from '@/lib/fcl'
 import { Buffer } from 'buffer'
 
 const toHexStr = (str: string) => {

@@ -1,17 +1,17 @@
-import { fcl } from "@/lib/onflow";
+import { fcl } from '@/lib/fcl'
 
 export const FCLGetAccount = () => {
   const handleClick = async () => {
     const result = await await fcl
       .send([fcl.getAccount(`0x6c4fdc9a9d2975ff`)])
-      .then(fcl.decode);
+      .then(fcl.decode)
 
-    console.log(result);
-  };
+    console.log(result)
+  }
 
   return (
     <div>
       <button onClick={handleClick}>fcl.getAccount</button>
     </div>
-  );
-};
+  )
+}
