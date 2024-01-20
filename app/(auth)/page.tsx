@@ -15,6 +15,7 @@ import { FCLTx } from '@/components/fcl-tx'
 import { FCLUnauthenticateCard } from '@/components/fcl-unauthenticate-card'
 import { FCLVerifyAccountProof } from '@/components/fcl-verify-account-proof'
 import { FCLVerifyUserSignatureCard } from '@/components/fcl-verify-user-signature-card'
+import { Button } from '@/components/ui/button'
 import { FCL_BASE_URL, MAGIC_API_KEY } from '@/constants/env'
 import { fcl } from '@/lib/fcl'
 import { ChangeEvent, useState } from 'react'
@@ -28,14 +29,18 @@ export default function Home() {
     setApiKey(value)
     fcl.config().put('discovery.wallet', `${FCL_BASE_URL}/${value}/authn`)
   }
+  const handleLogout = () => {
+    fcl.unauthenticate()
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center space-y-4 p-24">
+    <div className="flex w-full flex-1 flex-col">
       <input
         style={{ padding: '4px 8px', width: '246px' }}
         value={apiKey}
         onChange={handleChange}
       />
+      <Button onClick={handleLogout}>Logout</Button>
 
       <div>Wallet Interactions</div>
       <FCLAuthenticateCard />
@@ -65,6 +70,6 @@ export default function Home() {
 
       <div>Transaction Status Utility</div>
       <FCLTx />
-    </main>
+    </div>
   )
 }

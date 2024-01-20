@@ -11,6 +11,8 @@ const resolver = async () => {
   }
 }
 
+console.log({ FCL_BASE_URL, MAGIC_API_KEY })
+
 fcl.config({
   'flow.network': 'testnet',
   'accessNode.api': 'https://rest-testnet.onflow.org',
