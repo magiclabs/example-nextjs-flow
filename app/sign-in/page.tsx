@@ -1,5 +1,6 @@
 'use client'
 
+import { isEmpty, isNil } from '@fxts/core'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
@@ -23,11 +24,14 @@ import {
 } from '@/components/ui/select'
 import { TypographyH2 } from '@/components/ui/typography'
 import { useToast } from '@/components/ui/use-toast'
+import { FCL_BASE_URL, MAGIC_API_KEY } from '@/constants/env'
 import { fcl } from '@/lib/fcl'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { z } from 'zod'
 
 const FormSchema = z.object({
+  apiKey: z.string(),
   method: z.string(),
   email: z.string().email().optional(),
   phoneNumber: z.string().optional(),
@@ -40,14 +44,48 @@ export default function SignInPage() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      apiKey: MAGIC_API_KEY,
       method: 'default',
     },
   })
 
   const method = form.watch('method')
 
-  const onSubmit = async ({ email }: z.infer<typeof FormSchema>) => {
+  const onSubmit = async ({
+    apiKey,
+    method,
+    email,
+    phoneNumber,
+  }: z.infer<typeof FormSchema>) => {
     try {
+      if (method === 'email-otp' || method === 'magic-link') {
+        if (isNil(email) || isEmpty(email)) {
+          throw new Error('Email is required')
+        }
+
+        fcl.config().put(
+          'discovery.wallet',
+          `${FCL_BASE_URL}/${apiKey}/authn?${new URLSearchParams({
+            method,
+            email,
+          })}`,
+        )
+      } else if (method === 'sms') {
+        if (isNil(phoneNumber) || isEmpty(phoneNumber)) {
+          throw new Error('PhoneNumber is required')
+        }
+
+        fcl.config().put(
+          'discovery.wallet',
+          `${FCL_BASE_URL}/${apiKey}/authn?${new URLSearchParams({
+            method,
+            phoneNumber,
+          })}`,
+        )
+      } else {
+        fcl.config().put('discovery.wallet', `${FCL_BASE_URL}/${apiKey}/authn`)
+      }
+
       const user = await fcl.authenticate()
       if (!user.loggedIn) {
         throw new Error("You're not logged in")
@@ -66,6 +104,14 @@ export default function SignInPage() {
     }
   }
 
+  useEffect(() => {
+    form.reset({
+      ...form.getValues(),
+      email: '',
+      phoneNumber: '',
+    })
+  }, [form, method])
+
   return (
     <div className="flex w-full flex-1 flex-col">
       <TypographyH2>Magic + FCL Example</TypographyH2>
@@ -74,6 +120,19 @@ export default function SignInPage() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="apiKey"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Magic API Key</FormLabel>
+                <FormControl>
+                  <Input placeholder="Your API Key" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="method"

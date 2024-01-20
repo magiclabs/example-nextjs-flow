@@ -15,6 +15,7 @@
     "pkg:bump": "ncu -u"
   },
   "dependencies": {
+    "@fxts/core": "^0.23.0",
     "@hookform/resolvers": "^3.3.4",
     "@onflow/fcl": "1.9.0",
     "@onflow/typedefs": "1.2.1",
