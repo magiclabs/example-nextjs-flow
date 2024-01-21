@@ -6,6 +6,13 @@ import { useForm } from 'react-hook-form'
 
 import { Button } from '@/components/ui/button'
 import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
   Form,
   FormControl,
   FormDescription,
@@ -22,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TypographyH2 } from '@/components/ui/typography'
+import { TypographyH2, TypographySmall } from '@/components/ui/typography'
 import { useToast } from '@/components/ui/use-toast'
 import { FCL_BASE_URL, MAGIC_API_KEY } from '@/constants/env'
 import { fcl } from '@/lib/fcl'
@@ -60,7 +67,14 @@ export default function SignInPage() {
     try {
       if (method === 'email-otp' || method === 'magic-link') {
         if (isNil(email) || isEmpty(email)) {
-          throw new Error('Email is required')
+          form.setError(
+            'email',
+            {
+              message: 'Email is required',
+            },
+            { shouldFocus: true },
+          )
+          return
         }
 
         fcl.config().put(
@@ -72,7 +86,14 @@ export default function SignInPage() {
         )
       } else if (method === 'sms') {
         if (isNil(phoneNumber) || isEmpty(phoneNumber)) {
-          throw new Error('PhoneNumber is required')
+          form.setError(
+            'phoneNumber',
+            {
+              message: 'PhoneNumber is required',
+            },
+            { shouldFocus: true },
+          )
+          return
         }
 
         fcl.config().put(
@@ -97,114 +118,133 @@ export default function SignInPage() {
       })
       router.push('/')
     } catch (e) {
-      form.setError(
-        'root',
-        e instanceof Error ? e : new Error('An unknown error occurred'),
-      )
+      form.setError('root', {
+        message: e instanceof Error ? e.message : 'An unknown error occurred',
+      })
     }
   }
 
   useEffect(() => {
-    form.reset({
-      ...form.getValues(),
-      email: '',
-      phoneNumber: '',
-    })
+    if (form.getValues('email') || form.getValues('phoneNumber')) {
+      form.reset({
+        ...form.getValues(),
+        email: undefined,
+        phoneNumber: undefined,
+      })
+    }
   }, [form, method])
 
   return (
     <div className="flex w-full flex-1 flex-col">
       <TypographyH2>Magic + FCL Example</TypographyH2>
-
       <br />
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="apiKey"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Magic API Key</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your API Key" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="method"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Method</FormLabel>
-                <FormDescription>Please select sign in method</FormDescription>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a verified email to display" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="default">Default</SelectItem>
-                    <SelectItem value="email-otp">Email OTP</SelectItem>
-                    <SelectItem value="magic-link">Magic Link</SelectItem>
-                    <SelectItem value="sms">SMS</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <Card>
+        <CardHeader>
+          <CardTitle>FCL Authenticate</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form className="space-y-6">
+              <FormField
+                control={form.control}
+                name="apiKey"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Magic API Key</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your API Key" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Method</FormLabel>
+                    <FormDescription>
+                      Please select sign in method
+                    </FormDescription>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a verified email to display" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="default">Default</SelectItem>
+                        <SelectItem value="email-otp">Email OTP</SelectItem>
+                        <SelectItem value="magic-link">Magic Link</SelectItem>
+                        <SelectItem value="sms">SMS</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {(method === 'email-otp' || method === 'magic-link') && (
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              {(method === 'email-otp' || method === 'magic-link') && (
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
-          )}
 
-          {method === 'sms' && (
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>PhoneNumber</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your phone number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              {method === 'sms' && (
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>PhoneNumber</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your phone number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
-          )}
 
+              {form.formState.errors.root && (
+                <div>
+                  <TypographySmall className="text-red-500 dark:text-red-900">
+                    {form.formState.errors.root.message}
+                  </TypographySmall>
+                </div>
+              )}
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter>
           <Button
             type="submit"
             size="lg"
             className="w-full"
+            onClick={form.handleSubmit(onSubmit)}
             disabled={
               form.formState.isSubmitting || form.formState.isSubmitSuccessful
             }
           >
             Sign In
           </Button>
-        </form>
-      </Form>
+        </CardFooter>
+      </Card>
     </div>
   )
 }
