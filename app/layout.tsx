@@ -3,7 +3,6 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { Suspense } from 'react'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -28,9 +27,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <main className="flex min-h-svh flex-col items-center p-4 md:p-24">
-              <Suspense fallback={<div>Hello loading...</div>}>
-                {children}
-              </Suspense>
+              {children}
               <Toaster />
             </main>
           </ThemeProvider>

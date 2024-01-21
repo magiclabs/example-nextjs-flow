@@ -2,17 +2,23 @@
 
 import { useUser } from '@/hooks/use-user'
 import { useRouter } from 'next/navigation'
-import { PropsWithChildren, useEffect } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
 
 export default function SignInLayout({ children }: PropsWithChildren) {
   const router = useRouter()
-  const { user } = useUser()
+  const [isMounted, setIsMounted] = useState(false)
+  const { isLoggedIn } = useUser()
 
   useEffect(() => {
-    if (!user.loggedIn) {
+    if (!isLoggedIn) {
       router.push('/sign-in')
     }
-  }, [user, router])
+    setIsMounted(true)
+  }, [isLoggedIn, router])
 
-  return !user.loggedIn ? <div>Checking session...</div> : <>{children}</>
+  if (!isMounted) {
+    return <div>Checking sessiong...</div>
+  }
+
+  return !isLoggedIn ? <div>Checking session...</div> : <>{children}</>
 }

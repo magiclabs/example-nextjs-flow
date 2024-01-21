@@ -17,7 +17,7 @@ console.log({ FCL_BASE_URL, MAGIC_API_KEY })
 fcl.config({
   'flow.network': 'testnet',
   'accessNode.api': 'https://rest-testnet.onflow.org',
-  'discovery.wallet': `${FCL_BASE_URL}/${MAGIC_API_KEY}/authn`,
+  'discovery.wallet': `${FCL_BASE_URL}/authn?apiKey=${MAGIC_API_KEY}`,
   'discovery.wallet.method': 'IFRAME/RPC',
   'fcl.accountProotf.resolver': resolver,
 })

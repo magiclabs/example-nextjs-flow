@@ -79,7 +79,8 @@ export default function SignInPage() {
 
         fcl.config().put(
           'discovery.wallet',
-          `${FCL_BASE_URL}/${apiKey}/authn?${new URLSearchParams({
+          `${FCL_BASE_URL}/authn?${new URLSearchParams({
+            apiKey,
             method,
             email,
           })}`,
@@ -98,13 +99,19 @@ export default function SignInPage() {
 
         fcl.config().put(
           'discovery.wallet',
-          `${FCL_BASE_URL}/${apiKey}/authn?${new URLSearchParams({
+          `${FCL_BASE_URL}/authn?${new URLSearchParams({
+            apiKey,
             method,
             phoneNumber,
           })}`,
         )
       } else {
-        fcl.config().put('discovery.wallet', `${FCL_BASE_URL}/${apiKey}/authn`)
+        fcl.config().put(
+          'discovery.wallet',
+          `${FCL_BASE_URL}/authn?${new URLSearchParams({
+            apiKey,
+          })}`,
+        )
       }
 
       const user = await fcl.authenticate()

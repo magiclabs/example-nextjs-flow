@@ -2,6 +2,7 @@
 
 import { AppUtilsCard } from '@/components/app-utils-card'
 import { BuildersCard } from '@/components/builders-card'
+import { CurrentUserCard } from '@/components/current-user-card'
 import { OnChainInteractionsCard } from '@/components/on-chain-interactions-card'
 import { PreBuiltInteractionsCard } from '@/components/pre-built-interactions-card'
 import { TransactionStatusUtilityCard } from '@/components/transaction-status-utility-card'
@@ -22,6 +23,7 @@ export default function Home() {
         <TransactionStatusUtilityCard />
         <AppUtilsCard />
         <BuildersCard />
+        <CurrentUserCard />
       </div>
     </div>
   )
