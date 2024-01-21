@@ -1,5 +1,6 @@
 import { QueryProvider } from '@/components/query-provider'
 import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/toaster'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Suspense } from 'react'
@@ -30,6 +31,7 @@ export default function RootLayout({
               <Suspense fallback={<div>Hello loading...</div>}>
                 {children}
               </Suspense>
+              <Toaster />
             </main>
           </ThemeProvider>
         </QueryProvider>
