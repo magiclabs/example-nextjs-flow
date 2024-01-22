@@ -7,10 +7,6 @@ export const AppUtilsCard = () => {
     try {
       const hexMessage = Buffer.from('Hello World').toString('hex')
       const signatures = await fcl.currentUser().signUserMessage(hexMessage)
-      // console.log({ signatures })
-
-      // const user = await fcl.currentUser().snapshot()
-      // console.log({ user })
 
       const isValid = await fcl.AppUtils.verifyUserSignatures(
         hexMessage,
