@@ -38,6 +38,7 @@ import { useEffect } from 'react'
 import { z } from 'zod'
 
 const FormSchema = z.object({
+  network: z.string(),
   apiKey: z.string(),
   method: z.string(),
   email: z.string().email().optional(),
@@ -51,6 +52,7 @@ export default function SignInPage() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      network: 'testnet',
       apiKey: MAGIC_API_KEY,
       method: 'default',
     },
@@ -59,12 +61,23 @@ export default function SignInPage() {
   const method = form.watch('method')
 
   const onSubmit = async ({
+    network,
     apiKey,
     method,
     email,
     phoneNumber,
   }: z.infer<typeof FormSchema>) => {
     try {
+      fcl.config().put('flow.network', network)
+      fcl
+        .config()
+        .put(
+          'accessNode.api',
+          network === 'mainnet'
+            ? 'https://rest-mainnet.onflow.org'
+            : 'https://access-testnet.onflow.org',
+        )
+
       if (method === 'email-otp' || method === 'magic-link') {
         if (isNil(email) || isEmpty(email)) {
           form.setError(
@@ -153,6 +166,31 @@ export default function SignInPage() {
         <CardContent>
           <Form {...form}>
             <form className="space-y-6">
+              <FormField
+                control={form.control}
+                name="network"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Network</FormLabel>
+                    <FormDescription></FormDescription>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a verified email to display" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="mainnet">Mainnet</SelectItem>
+                        <SelectItem value="testnet">Testnet</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="apiKey"

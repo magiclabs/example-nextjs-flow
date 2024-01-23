@@ -12,11 +12,8 @@ const resolver = async () => {
 }
 
 fcl.config({
-  // 'flow.network': 'miannet',
-  // 'accessNode.api': 'https://rest-mainnet.onflow.org',
   'flow.network': 'testnet',
   'accessNode.api': 'https://rest-testnet.onflow.org',
-  // 'discovery.wallet': `${FCL_BASE_URL}/authn?apiKey=${MAGIC_API_KEY}`,
   'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
   'discovery.wallet.method': 'IFRAME/RPC',
   'fcl.accountProof.resolver': resolver,
