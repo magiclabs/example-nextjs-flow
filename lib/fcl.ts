@@ -19,7 +19,7 @@ fcl.config({
   'accessNode.api': 'https://rest-testnet.onflow.org',
   'discovery.wallet': `${FCL_BASE_URL}/authn?apiKey=${MAGIC_API_KEY}`,
   'discovery.wallet.method': 'IFRAME/RPC',
-  'fcl.accountProotf.resolver': resolver,
+  'fcl.accountProof.resolver': resolver,
 })
 
 const getFlowdiverAccountURL = (address: string) => {
