@@ -1,4 +1,3 @@
-import { FCL_BASE_URL, MAGIC_API_KEY } from '@/constants/env'
 import { generateRandomNonce } from '@/utils'
 import * as fcl from '@onflow/fcl'
 import * as t from '@onflow/types'
@@ -12,12 +11,13 @@ const resolver = async () => {
   }
 }
 
-console.log({ FCL_BASE_URL, MAGIC_API_KEY })
-
 fcl.config({
+  // 'flow.network': 'miannet',
+  // 'accessNode.api': 'https://rest-mainnet.onflow.org',
   'flow.network': 'testnet',
   'accessNode.api': 'https://rest-testnet.onflow.org',
-  'discovery.wallet': `${FCL_BASE_URL}/authn?apiKey=${MAGIC_API_KEY}`,
+  // 'discovery.wallet': `${FCL_BASE_URL}/authn?apiKey=${MAGIC_API_KEY}`,
+  'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
   'discovery.wallet.method': 'IFRAME/RPC',
   'fcl.accountProof.resolver': resolver,
 })

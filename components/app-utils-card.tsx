@@ -2,11 +2,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { APP_IDENTIFIER, fcl } from '@/lib/fcl'
 
+const USER_SIGNATURE = 'USER_SIGNATURE'
+
 export const AppUtilsCard = () => {
   const handleVerifyUserSignature = async () => {
     try {
-      const hexMessage = Buffer.from('Hello World').toString('hex')
+      const hexMessage = Buffer.from('Foo').toString('hex')
       const signatures = await fcl.currentUser().signUserMessage(hexMessage)
+      console.log({ signatures })
 
       const isValid = await fcl.AppUtils.verifyUserSignatures(
         hexMessage,
@@ -14,8 +17,7 @@ export const AppUtilsCard = () => {
       )
       console.log({ isValid })
     } catch (e) {
-      console.log(e)
-      console.error(JSON.stringify(e))
+      console.error(e)
     }
   }
 
