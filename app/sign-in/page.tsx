@@ -43,6 +43,7 @@ const FormSchema = z.object({
   method: z.string(),
   email: z.string().email().optional(),
   phoneNumber: z.string().optional(),
+  provider: z.string().optional(),
 })
 
 export default function SignInPage() {
@@ -66,6 +67,7 @@ export default function SignInPage() {
     method,
     email,
     phoneNumber,
+    provider,
   }: z.infer<typeof FormSchema>) => {
     try {
       fcl.config().put('flow.network', network)
@@ -118,6 +120,27 @@ export default function SignInPage() {
             phoneNumber,
           })}`,
         )
+      } else if (method === 'oauth') {
+        if (isNil(provider) || isEmpty(provider)) {
+          form.setError(
+            'provider',
+            {
+              message: 'Provider is required',
+            },
+            { shouldFocus: true },
+          )
+          return
+        }
+
+        fcl.config().put(
+          'discovery.wallet',
+          `${FCL_BASE_URL}/authn?${new URLSearchParams({
+            apiKey,
+            method,
+            provider,
+          })}`,
+        )
+        fcl.config().put('discovery.wallet.method', 'TAB/RPC')
       } else {
         fcl.config().put(
           'discovery.wallet',
@@ -143,7 +166,6 @@ export default function SignInPage() {
       })
     }
   }
-
   useEffect(() => {
     if (form.getValues('email') || form.getValues('phoneNumber')) {
       form.reset({
@@ -227,6 +249,7 @@ export default function SignInPage() {
                         <SelectItem value="email-otp">Email OTP</SelectItem>
                         <SelectItem value="magic-link">Magic Link</SelectItem>
                         <SelectItem value="sms">SMS</SelectItem>
+                        <SelectItem value="oauth">OAuth</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -261,6 +284,31 @@ export default function SignInPage() {
                         <Input placeholder="Your phone number" {...field} />
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {method === 'oauth' && (
+                <FormField
+                  control={form.control}
+                  name="provider"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Provider</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a provider" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="google">Google</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormItem>
                   )}
                 />
