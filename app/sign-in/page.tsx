@@ -100,6 +100,7 @@ export default function SignInPage() {
             email,
           })}`,
         )
+        fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')
       } else if (method === 'sms') {
         if (isNil(phoneNumber) || isEmpty(phoneNumber)) {
           form.setError(
@@ -120,6 +121,7 @@ export default function SignInPage() {
             phoneNumber,
           })}`,
         )
+        fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')
       } else if (method === 'oauth') {
         if (isNil(provider) || isEmpty(provider)) {
           form.setError(
@@ -148,6 +150,7 @@ export default function SignInPage() {
             apiKey,
           })}`,
         )
+        fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')
       }
 
       const user = await fcl.authenticate()
