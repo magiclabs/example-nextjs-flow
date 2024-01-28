@@ -2,6 +2,7 @@
 
 import { AppUtilsCard } from '@/components/app-utils-card'
 import { BuildersCard } from '@/components/builders-card'
+import { ContractsCard } from '@/components/contracts-card'
 import { CurrentUserCard } from '@/components/current-user-card'
 import { OnChainInteractionsCard } from '@/components/on-chain-interactions-card'
 import { PreBuiltInteractionsCard } from '@/components/pre-built-interactions-card'
@@ -18,6 +19,7 @@ export default function Home() {
       <div className="flex flex-col space-y-6">
         <UserInfoCard />
 
+        <ContractsCard />
         <OnChainInteractionsCard />
         <PreBuiltInteractionsCard />
         <TransactionStatusUtilityCard />

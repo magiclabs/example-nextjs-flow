@@ -17,6 +17,8 @@ fcl.config({
   'discovery.wallet': 'https://fcl-discovery.onflow.org/testnet/authn',
   'discovery.wallet.method': 'IFRAME/RPC',
   'fcl.accountProof.resolver': resolver,
+  '0xFLOW': '0x7e60df042a9c0868',
+  '0xFT': '0x9a0766d93b6608b7',
 })
 
 const getFlowdiverAccountURL = (address: string) => {

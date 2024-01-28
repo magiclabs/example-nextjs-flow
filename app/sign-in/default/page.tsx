@@ -20,6 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -29,15 +30,19 @@ import {
 } from '@/components/ui/select'
 import { TypographySmall } from '@/components/ui/typography'
 import { useToast } from '@/components/ui/use-toast'
+import { FCL_BASE_URL, MAGIC_API_KEY } from '@/constants/env'
 import { fcl } from '@/lib/fcl'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { z } from 'zod'
 
 const FormSchema = z.object({
   network: z.string(),
+  apiKey: z.string(),
+  method: z.string(),
 })
 
-export default function DiscoverySignInForm() {
+export default function DefaultPage() {
   const router = useRouter()
   const { toast } = useToast()
 
@@ -45,10 +50,14 @@ export default function DiscoverySignInForm() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       network: 'testnet',
+      apiKey: MAGIC_API_KEY,
+      method: 'default',
     },
   })
 
-  const onSubmit = async ({ network }: z.infer<typeof FormSchema>) => {
+  const method = form.watch('method')
+
+  const onSubmit = async ({ network, apiKey }: z.infer<typeof FormSchema>) => {
     try {
       fcl.config().put('flow.network', network)
       fcl
@@ -60,12 +69,13 @@ export default function DiscoverySignInForm() {
             : 'https://access-testnet.onflow.org',
         )
 
-      fcl
-        .config()
-        .put(
-          'discovery.wallet',
-          `https://fcl-discovery.onflow.org/${network}/authn`,
-        )
+      fcl.config().put(
+        'discovery.wallet',
+        `${FCL_BASE_URL}/authn?${new URLSearchParams({
+          apiKey,
+        })}`,
+      )
+      fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')
 
       const user = await fcl.authenticate()
       if (!user.loggedIn) {
@@ -85,14 +95,18 @@ export default function DiscoverySignInForm() {
     }
   }
 
+  useEffect(() => {
+    router.push('/sign-in/' + method)
+  }, [method, router])
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>FCL Authenticate</CardTitle>
       </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form className="space-y-6">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-6">
             <FormField
               control={form.control}
               name="network"
@@ -118,6 +132,19 @@ export default function DiscoverySignInForm() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="apiKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Magic API Key</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your API Key" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {form.formState.errors.root && (
               <div>
@@ -126,22 +153,21 @@ export default function DiscoverySignInForm() {
                 </TypographySmall>
               </div>
             )}
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter>
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full"
-          onClick={form.handleSubmit(onSubmit)}
-          disabled={
-            form.formState.isSubmitting || form.formState.isSubmitSuccessful
-          }
-        >
-          Sign In
-        </Button>
-      </CardFooter>
+          </CardContent>
+          <CardFooter>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={
+                form.formState.isSubmitting || form.formState.isSubmitSuccessful
+              }
+            >
+              Sign In
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   )
 }
