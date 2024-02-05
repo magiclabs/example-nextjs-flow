@@ -17,7 +17,7 @@ export default function SignInLayout({ children }: PropsWithChildren) {
   }, [isLoggedIn, router])
 
   if (!isMounted) {
-    return <div>Checking sessiong...</div>
+    return <div>Checking session...</div>
   }
 
   return !isLoggedIn ? <div>Checking session...</div> : <>{children}</>
