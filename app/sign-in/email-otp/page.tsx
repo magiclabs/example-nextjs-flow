@@ -78,11 +78,10 @@ export default function EmailOTPPage() {
         )
       fcl.config().put(
         'discovery.wallet',
-        `${FCL_BASE_URL}/authn?${new URLSearchParams({
+        `${FCL_BASE_URL}/${locale}/authn?${new URLSearchParams({
           apiKey,
           method,
           email,
-          locale,
         })}`,
       )
       fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')

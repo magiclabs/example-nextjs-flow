@@ -77,11 +77,10 @@ export default function OAuthPage() {
         )
       fcl.config().put(
         'discovery.wallet',
-        `${FCL_BASE_URL}/authn?${new URLSearchParams({
+        `${FCL_BASE_URL}/${locale}/authn?${new URLSearchParams({
           apiKey,
           method,
           provider,
-          locale,
         })}`,
       )
       fcl.config().put('discovery.wallet.method', 'TAB/RPC')

@@ -77,9 +77,8 @@ export default function DefaultPage() {
 
       fcl.config().put(
         'discovery.wallet',
-        `${FCL_BASE_URL}/authn?${new URLSearchParams({
+        `${FCL_BASE_URL}/${locale}/authn?${new URLSearchParams({
           apiKey,
-          locale,
         })}`,
       )
       fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')
