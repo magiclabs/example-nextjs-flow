@@ -40,6 +40,7 @@ const FormSchema = z.object({
   network: z.string(),
   apiKey: z.string(),
   phoneNumber: z.string(),
+  locale: z.string(),
 })
 
 export default function SMSPage() {
@@ -60,6 +61,7 @@ export default function SMSPage() {
     network,
     apiKey,
     phoneNumber,
+    locale,
   }: z.infer<typeof FormSchema>) => {
     try {
       fcl.config().put('flow.network', network)
@@ -77,6 +79,7 @@ export default function SMSPage() {
           apiKey,
           method,
           phoneNumber,
+          locale,
         })}`,
       )
       fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')
@@ -127,6 +130,31 @@ export default function SMSPage() {
                     <SelectContent>
                       <SelectItem value="mainnet">Mainnet</SelectItem>
                       <SelectItem value="testnet">Testnet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="locale"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Locale</FormLabel>
+                  <FormDescription></FormDescription>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="en">en</SelectItem>
+                      <SelectItem value="ja">ja</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

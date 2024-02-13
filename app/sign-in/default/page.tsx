@@ -40,6 +40,7 @@ const FormSchema = z.object({
   network: z.string(),
   apiKey: z.string(),
   method: z.string(),
+  locale: z.string(),
 })
 
 export default function DefaultPage() {
@@ -52,12 +53,17 @@ export default function DefaultPage() {
       network: 'testnet',
       apiKey: MAGIC_API_KEY,
       method: 'default',
+      locale: 'en',
     },
   })
 
   const method = form.watch('method')
 
-  const onSubmit = async ({ network, apiKey }: z.infer<typeof FormSchema>) => {
+  const onSubmit = async ({
+    network,
+    apiKey,
+    locale,
+  }: z.infer<typeof FormSchema>) => {
     try {
       fcl.config().put('flow.network', network)
       fcl
@@ -73,6 +79,7 @@ export default function DefaultPage() {
         'discovery.wallet',
         `${FCL_BASE_URL}/authn?${new URLSearchParams({
           apiKey,
+          locale,
         })}`,
       )
       fcl.config().put('discovery.wallet.method', 'IFRAME/RPC')
@@ -126,6 +133,31 @@ export default function DefaultPage() {
                     <SelectContent>
                       <SelectItem value="mainnet">Mainnet</SelectItem>
                       <SelectItem value="testnet">Testnet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="locale"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Locale</FormLabel>
+                  <FormDescription></FormDescription>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="en">en</SelectItem>
+                      <SelectItem value="ja">ja</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
