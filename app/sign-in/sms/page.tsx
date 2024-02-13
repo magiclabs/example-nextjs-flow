@@ -53,6 +53,7 @@ export default function SMSPage() {
       method: 'sms',
       network: 'testnet',
       apiKey: MAGIC_API_KEY,
+      locale: 'en',
     },
   })
 
@@ -174,40 +175,6 @@ export default function SMSPage() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="method"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Method</FormLabel>
-                  <FormDescription>
-                    Please select sign in method
-                  </FormDescription>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="default">Default</SelectItem>
-                      <SelectItem value="email-otp">Email OTP</SelectItem>
-                      <SelectItem value="email-otp-custom">
-                        Email OTP + Custom UI
-                      </SelectItem>
-                      <SelectItem value="magic-link">Magic Link</SelectItem>
-                      <SelectItem value="sms">SMS</SelectItem>
-                      <SelectItem value="oauth">OAuth</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="phoneNumber"
